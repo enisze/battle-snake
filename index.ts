@@ -10,6 +10,7 @@
 // To get you started we've included code to prevent your Battlesnake from moving backwards.
 // For more info see docs.battlesnake.com
 
+import { bodyCollideCheck } from "./helpers/bodyCollideCheck"
 import runServer from "./server"
 import { Coord, GameState, InfoResponse, MoveResponse } from "./types"
 
@@ -93,54 +94,23 @@ function move(gameState: GameState): MoveResponse {
     }
   }
 
-  const bodyRight = checkBody(myBody, checkRight)
-  console.log(myBody, myHead)
-
-  console.log(bodyRight)
+  const [bodyRight, bodyLeft, bodyAbove, bodyBelow] = bodyCollideCheck(myBody)
 
   if (bodyRight) {
     isMoveSafe.right = false
   }
 
-  const checkLeft = (body: Coord) => {
-    if (myHead.y === body.y && myHead.x - 1 === body.x) {
-      return true
-    }
-  }
-
-  const bodyLeft = checkBody(myBody, checkLeft)
-
-  console.log(bodyLeft)
   if (bodyLeft) {
     isMoveSafe.left = false
   }
 
-  const checkAbove = (body: Coord) => {
-    if (myHead.x === body.x && myHead.y + 1 === body.y) {
-      return true
-    }
-  }
-
-  const bodyAbove = checkBody(myBody, checkAbove)
-
-  console.log(bodyAbove)
   if (bodyAbove) {
     isMoveSafe.up = false
   }
 
-  const checkBelow = (body: Coord) => {
-    if (myHead.x === body.x && myHead.y - 1 === body.y) {
-      return true
-    }
-  }
-
-  const bodyBelow = checkBody(myBody, checkBelow)
-
   if (bodyBelow) {
     isMoveSafe.down = false
   }
-
-  console.log(bodyBelow)
 
   // TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
   // opponents = gameState.board.snakes;
@@ -168,13 +138,3 @@ runServer({
   move: move,
   end: end
 })
-
-const checkBody = (
-  body: Coord[],
-  check: (coord: Coord) => boolean | undefined
-) => {
-  return body.some((part, index) => {
-    if (index === 0 || index === 1) return false
-    return check(part)
-  })
-}
