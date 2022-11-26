@@ -12,7 +12,7 @@
 
 import { bodyCollideCheck } from "./helpers/bodyCollideCheck"
 import runServer from "./server"
-import { Coord, GameState, InfoResponse, MoveResponse } from "./types"
+import { GameState, InfoResponse, MoveResponse } from "./types"
 
 // info is called when you create your Battlesnake on play.battlesnake.com
 // and controls your Battlesnake's appearance
@@ -87,12 +87,6 @@ function move(gameState: GameState): MoveResponse {
 
   //Prevent your Battlesnake from colliding with itself
   const myBody = gameState.you.body
-
-  const checkRight = (body: Coord) => {
-    if (myHead.y === body.y && myHead.x + 1 === body.x) {
-      return true
-    }
-  }
 
   const [bodyRight, bodyLeft, bodyAbove, bodyBelow] = bodyCollideCheck(myBody)
 
