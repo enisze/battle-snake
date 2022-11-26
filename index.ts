@@ -11,7 +11,7 @@
 // For more info see docs.battlesnake.com
 
 import runServer from "./server"
-import { GameState, InfoResponse, MoveResponse } from "./types"
+import { Coord, GameState, InfoResponse, MoveResponse } from "./types"
 
 // info is called when you create your Battlesnake on play.battlesnake.com
 // and controls your Battlesnake's appearance
@@ -87,16 +87,13 @@ function move(gameState: GameState): MoveResponse {
   //Prevent your Battlesnake from colliding with itself
   const myBody = gameState.you.body
 
-  const bodyRight = myBody.some((body) => {
-    if (
-      myHead.y === body.y &&
-      myHead.x === body.x + 1 &&
-      body.x + 1 !== myNeck.x
-    ) {
+  const checkRight = (body: Coord) => {
+    if (myHead.y === body.y && myHead.x + 1 === body.x) {
       return true
     }
-  })
+  }
 
+  const bodyRight = checkBody(myBody, checkRight)
   console.log(myBody, myHead)
 
   console.log(bodyRight)
@@ -105,48 +102,45 @@ function move(gameState: GameState): MoveResponse {
     isMoveSafe.right = false
   }
 
-  const bodyLeft = myBody.some((body) => {
-    if (
-      myHead.y === body.y &&
-      myHead.x === body.x - 1 &&
-      body.x - 1 !== myNeck.x
-    ) {
+  const checkLeft = (body: Coord) => {
+    if (myHead.y === body.y && myHead.x - 1 === body.x) {
       return true
     }
-  })
+  }
+
+  const bodyLeft = checkBody(myBody, checkLeft)
 
   console.log(bodyLeft)
   if (bodyLeft) {
     isMoveSafe.left = false
   }
 
-  const bodyAbove = myBody.some((body) => {
-    if (
-      myHead.x === body.x &&
-      myHead.y === body.y + 1 &&
-      body.x + 1 !== myNeck.y
-    ) {
+  const checkAbove = (body: Coord) => {
+    if (myHead.x === body.x && myHead.y + 1 === body.y) {
       return true
     }
-  })
+  }
+
+  const bodyAbove = checkBody(myBody, checkAbove)
 
   console.log(bodyAbove)
   if (bodyAbove) {
     isMoveSafe.up = false
   }
 
-  const bodyBelow = myBody.some((body) => {
-    if (
-      myHead.x === body.x &&
-      myHead.y === body.y - 1 &&
-      body.y - 1 !== myNeck.y
-    ) {
+  const checkBelow = (body: Coord) => {
+    if (myHead.x === body.x && myHead.y - 1 === body.y) {
       return true
     }
-  })
+  }
+
+  const bodyBelow = checkBody(myBody, checkBelow)
+
   if (bodyBelow) {
     isMoveSafe.down = false
   }
+
+  console.log(bodyBelow)
 
   // TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
   // opponents = gameState.board.snakes;
@@ -174,3 +168,13 @@ runServer({
   move: move,
   end: end
 })
+
+const checkBody = (
+  body: Coord[],
+  check: (coord: Coord) => boolean | undefined
+) => {
+  return body.some((part, index) => {
+    if (index === 0 || index === 1) return false
+    return check(part)
+  })
+}
