@@ -88,34 +88,59 @@ function move(gameState: GameState): MoveResponse {
   const myBody = gameState.you.body
 
   const bodyRight = myBody.some((body) => {
-    if (myHead.y === body.y && myHead.x === body.x + 1) {
+    if (
+      myHead.y === body.y &&
+      myHead.x === body.x + 1 &&
+      body.x + 1 !== myNeck.x
+    ) {
       return true
     }
   })
+
+  console.log(myBody, myHead)
+
+  console.log(bodyRight)
+
   if (bodyRight) {
     isMoveSafe.right = false
   }
 
   const bodyLeft = myBody.some((body) => {
-    if (myHead.y === body.y && myHead.x === body.x - 1) {
+    if (
+      myHead.y === body.y &&
+      myHead.x === body.x - 1 &&
+      body.x - 1 !== myNeck.x
+    ) {
       return true
     }
   })
+
+  console.log(bodyLeft)
   if (bodyLeft) {
     isMoveSafe.left = false
   }
 
   const bodyAbove = myBody.some((body) => {
-    if (myHead.x === body.x && myHead.y === body.y + 1) {
+    if (
+      myHead.x === body.x &&
+      myHead.y === body.y + 1 &&
+      body.x + 1 !== myNeck.y
+    ) {
       return true
     }
   })
+
+  console.log(bodyAbove)
   if (bodyAbove) {
     isMoveSafe.up = false
   }
 
   const bodyBelow = myBody.some((body) => {
-    if (myHead.x === body.x && myHead.y === body.y - 1) {
+    if (
+      myHead.x === body.x &&
+      myHead.y === body.y - 1 &&
+      body.y - 1 !== myNeck.y
+    ) {
       return true
     }
   })
